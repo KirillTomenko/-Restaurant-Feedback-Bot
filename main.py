@@ -5,11 +5,11 @@ import os
 from datetime import datetime
 
 app = Flask(__name__)
-     
-# Ваши данные (замените на реальные)
-TELEGRAM_BOT_TOKEN = "8282469899:AAH2Rm80lvV7u5vgGufH4fmpV5Qq_OjoYGI"
-RESTAURANT_NAME = "Delicatesy"
-GAS_URL = "https://script.google.com/macros/s/AKfycbz9v4zGTtFhOsGYM31_WA3x-42_08Uxpdo66N53ntCnAqMv-nZh8gYXANtOHQx7Zc6BRw/exec"
+
+# ⚠️ ВАЖНО: Используйте переменные окружения (Secrets в Replit)
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', "8282469899:AAH2Rm80lvV7u5vgGufH4fmpV5Qq_OjoYGI")
+RESTAURANT_NAME = os.environ.get('RESTAURANT_NAME', "Delicatesy")
+GAS_URL = os.environ.get('GAS_URL', "https://script.google.com/macros/s/AKfycbz9v4zGTtFhOsGYM31_WA3x-42_08Uxpdo66N53ntCnAqMv-nZh8gYXANtOHQx7Zc6BRw/exec")
 
 # Файл для хранения состояния диалогов
 STATE_FILE = "conversation_states.json"
@@ -45,8 +45,53 @@ def get_initial_state():
         'visit_type': ''
     }
 
+# ✨ Главная страница для UptimeRobot и проверки
+@app.route('/', methods=['GET'])
+def home():
+    """Главная страница - статус бота"""
+    return '''
+    <html>
+        <head>
+            <title>Restaurant Feedback Bot - Status</title>
+            <style>
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    text-align: center;
+                    padding: 50px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                }
+                .status { font-size: 24px; margin: 20px; }
+                .emoji { font-size: 64px; margin: 20px; }
+                .info { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px auto; max-width: 500px; }
+            </style>
+        </head>
+        <body>
+            <div class="emoji">🤖</div>
+            <h1>Restaurant Feedback Bot</h1>
+            <div class="status">✅ Bot is running!</div>
+            <div class="info">
+                <p><strong>Restaurant:</strong> Delicatesy</p>
+                <p><strong>Telegram:</strong> <a href="https://t.me/oprosnik_rest_bot" style="color: white;">@oprosnik_rest_bot</a></p>
+                <p><strong>Status:</strong> Active</p>
+            </div>
+        </body>
+    </html>
+    ''', 200
+
+@app.route('/health', methods=['GET'])
+def health():
+    """Health check для мониторинга"""
+    return {
+        'status': 'ok', 
+        'message': 'Server is running',
+        'bot': 'active',
+        'timestamp': datetime.now().isoformat()
+    }, 200
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
+    """Webhook endpoint для Telegram"""
     try:
         data = request.get_json()
         if 'message' not in data:
@@ -278,8 +323,9 @@ def save_to_sheets(chat_id, state):
     except Exception as e:
         print(f"Save error: {str(e)}")
 
+@app.route('/reset', methods=['POST'])
 def reset_states():
-    """Очистить все состояния диалогов"""
+    """Очистить все состояния диалогов (только для отладки)"""
     try:
         if os.path.exists(STATE_FILE):
             os.remove(STATE_FILE)
@@ -289,12 +335,15 @@ def reset_states():
         return {'ok': False, 'error': str(e)}, 500
 
 
-
-@app.route('/health', methods=['GET'])
-def health():
-    """Проверка здоровья сервера"""
-    return {'status': 'ok', 'message': 'Server is running'}, 200
-
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    print("🤖 Starting Restaurant Feedback Bot...")
+    print(f"📍 Restaurant: {RESTAURANT_NAME}")
+    print(f"🌐 Server starting on port 5000")
+    print(f"✅ Webhook endpoint: /webhook")
+    print(f"✅ Health check: /health")
+    print(f"✅ Home page: /")
+    
+    # Запуск Flask приложения
+    # host='0.0.0.0' - доступен извне
+    # port=5000 - стандартный порт для Replit
+    app.run(host='0.0.0.0', port=5000, debug=False)
