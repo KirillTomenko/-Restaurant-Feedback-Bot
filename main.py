@@ -5,7 +5,6 @@ import os
 from datetime import datetime
 
 app = Flask(__name__)
-from keep_alive import keep_alive
      
 # Ваши данные (замените на реальные)
 TELEGRAM_BOT_TOKEN = "8282469899:AAH2Rm80lvV7u5vgGufH4fmpV5Qq_OjoYGI"
