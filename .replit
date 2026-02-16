@@ -1,0 +1,83 @@
+# Replit Configuration File
+# Автоматическая настройка среды для Restaurant Feedback Bot
+
+# Язык и среда выполнения
+language = "python3"
+run = "python main.py"
+
+# Точка входа
+entrypoint = "main.py"
+
+# Скрытые файлы в IDE
+hidden = [".pythonlibs", ".config", ".cache"]
+
+# Модули Nix для установки системных зависимостей
+[nix]
+channel = "stable-23_11"
+
+# Пакеты Python устанавливаются через requirements.txt
+[deployment]
+run = ["sh", "-c", "python main.py"]
+deploymentTarget = "cloudrun"
+
+# Переменные окружения (настраивайте в Secrets)
+# TELEGRAM_BOT_TOKEN - токен вашего бота от @BotFather
+# SPREADSHEET_ID - ID Google таблицы
+# credentials.json - загрузите как файл
+
+# Автоматический рестарт при изменении файлов
+[unitTest]
+language = "python3"
+
+# Debugger настройки
+[debugger]
+support = true
+
+[debugger.interactive]
+transport = "localhost:0"
+startCommand = ["dap-python", "main.py"]
+
+[debugger.interactive.integratedAdapter]
+dapTcpAddress = "localhost:0"
+
+[debugger.interactive.initializeMessage]
+command = "initialize"
+type = "request"
+
+[debugger.interactive.initializeMessage.arguments]
+adapterID = "debugpy"
+clientID = "replit"
+clientName = "replit.com"
+columnsStartAt1 = true
+linesStartAt1 = true
+locale = "en-us"
+pathFormat = "path"
+supportsInvalidatedEvent = true
+supportsProgressReporting = true
+supportsRunInTerminalRequest = true
+supportsVariablePaging = true
+supportsVariableType = true
+
+[debugger.interactive.launchMessage]
+command = "attach"
+type = "request"
+
+[debugger.interactive.launchMessage.arguments]
+logging = {}
+
+# Packager настройки
+[packager]
+language = "python3"
+ignoredPackages = ["unit_tests"]
+
+[packager.features]
+enabledForHosting = false
+packageSearch = true
+guessImports = true
+
+# Индексирование для автодополнения
+[languages.python3]
+pattern = "**/*.py"
+
+[languages.python3.languageServer]
+start = "pylsp"
