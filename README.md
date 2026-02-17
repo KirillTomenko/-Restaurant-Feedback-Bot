@@ -62,12 +62,11 @@
 ## 🖼️ Скриншоты
 
 ### Диалог с ботом
-![Bot conversation](screenshots/bot-conversation.png)
+![Bot conversation 1](bot-conversation-1.png)
+![Bot conversation 2](bot-conversation-2.png)
 
 ### Данные в Google Sheets с AI-анализом
-![Google Sheets](screenshots/google-sheets-data.png)
-
----
+![Google Sheets](google-sheets-data.png)
 
 ## 🛠️ Технологии
 
